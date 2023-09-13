@@ -1,5 +1,5 @@
 h1 {
-  background-color: darkgrey;
+  background-color: rgb(108, 87, 87);
   text-align: center;
 }
 label {
@@ -21,7 +21,6 @@ label {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-
 .green {
   background-color: lightgreen;
 }

@@ -1,11 +1,11 @@
 const key = "64f2ee2a8261daa4d9f780f5b365f275";
-let city = "Irvine";
+let city = "Denver";
 
 //get current time and date
 const date = moment().format("dddd, MMMM Do YYYY");
 const dateTime = moment().format("YYYY-MM-DD HH:MM:SS");
 
-const cityHistory = [];
+const cityHist = [];
 //Will save the text value of the search and save it to an array and storage
 $(".search").on("click", function (event) {
   event.preventDefault();
@@ -14,7 +14,7 @@ $(".search").on("click", function (event) {
     return;
   }
 
-  cityHistory.push(city);
+  cityHist.push(city);
 
   localStorage.setItem("city", JSON.stringify(cityHist));
   fiveForecastEl.empty();
@@ -23,9 +23,7 @@ $(".search").on("click", function (event) {
 });
 
 //Will create buttons based on search history
-
-//Will create buttons based on search history
-var contHistEl = $(".cityHist");
+const contHistEl = $(".cityHist");
 function getHistory() {
   contHistEl.empty();
 
@@ -118,4 +116,78 @@ function getWeatherToday() {
   getFiveDayForecast();
 }
 
-// git
+var fiveForecastEl = $(".fiveDayForecast");
+
+function getFiveDayForecast() {
+  var getUrlFiveDay = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&appid=${key}`;
+
+  $.ajax({
+    url: getUrlFiveDay,
+    method: "GET",
+  }).then(function (response) {
+    var fiveDayArray = response.list;
+    var myWeather = [];
+    //Made a object that would allow for easier data read
+    $.each(fiveDayArray, function (index, value) {
+      testObj = {
+        date: value.dt_txt.split(" ")[0],
+        time: value.dt_txt.split(" ")[1],
+        temp: value.main.temp,
+        feels_like: value.main.feels_like,
+        icon: value.weather[0].icon,
+        humidity: value.main.humidity,
+      };
+
+      if (value.dt_txt.split(" ")[1] === "12:00:00") {
+        myWeather.push(testObj);
+      }
+    });
+    //Inject the cards to the screen
+    for (let i = 0; i < myWeather.length; i++) {
+      var divElCard = $("<div>");
+      divElCard.attr("class", "card text-white bg-primary mb-3 cardOne");
+      divElCard.attr("style", "max-width: 200px;");
+      fiveForecastEl.append(divElCard);
+
+      var divElHeader = $("<div>");
+      divElHeader.attr("class", "card-header");
+      var m = moment(`${myWeather[i].date}`).format("MM-DD-YYYY");
+      divElHeader.text(m);
+      divElCard.append(divElHeader);
+
+      var divElBody = $("<div>");
+      divElBody.attr("class", "card-body");
+      divElCard.append(divElBody);
+
+      var divElIcon = $("<img>");
+      divElIcon.attr("class", "icons");
+      divElIcon.attr(
+        "src",
+        `https://openweathermap.org/img/wn/${myWeather[i].icon}@2x.png`
+      );
+      divElBody.append(divElIcon);
+
+      //Temp
+      var pElTemp = $("<p>").text(`Temperature: ${myWeather[i].temp} °F`);
+      divElBody.append(pElTemp);
+      //Feels Like
+      var pElFeel = $("<p>").text(`Feels Like: ${myWeather[i].feels_like} °F`);
+      divElBody.append(pElFeel);
+      //Humidity
+      var pElHumid = $("<p>").text(`Humidity: ${myWeather[i].humidity} %`);
+      divElBody.append(pElHumid);
+    }
+  });
+}
+//Allows for the example data to load for Denver
+function initLoad() {
+  var cityHistStore = JSON.parse(localStorage.getItem("city"));
+
+  if (cityHistStore !== null) {
+    cityHist = cityHistStore;
+  }
+  getHistory();
+  getWeatherToday();
+}
+
+initLoad();
