@@ -2,11 +2,6 @@ h1 {
   background-color: darkgrey;
   text-align: center;
 }
-
-.histBtnRow {
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
 label {
   margin-top: 10px;
   font-weight: bold;
@@ -21,4 +16,16 @@ label {
 }
 .colTwo {
   background-color: rgb(255, 255, 255);
+}
+.histBtnRow {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.icons {
+  height: 70px;
+  width: 70px;
+}
+.cardTodayDate {
+  font-size: 20px;
 }
